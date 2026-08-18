@@ -141,51 +141,60 @@
       <h2>Abstract</h2>
 
       <p>
-        This study asks whether search-performance signals observed during
-        March 2026 can help rank webpages that are more likely to experience
-        a meaningful impressions decline in April 2026.
-        A page-level dataset was constructed using five March-only features:
-        impressions, clicks, click-through rate, average search position,
-        and active days.
-        A transparent CTR-based baseline, Logistic Regression, and Random
-        Forest were evaluated on the same client-grouped holdout with zero
-        client overlap between training and testing.
-        Logistic Regression produced the strongest measured ranking,
-        achieving Precision@20 of 0.850 and Precision@50 of 0.700,
-        compared with 0.500 and 0.540 for the deterministic baseline.
-        The resulting scores were converted into a human-reviewed content
-        action playbook intended to prioritize investigation rather than
-        automate editorial decisions.
+        FlyRank's content workflow creates a practical prioritization problem:
+  when a content team manages many webpages, which pages should be reviewed
+  first for possible decline or refresh opportunities?
+  This study tests whether five search-performance signals observed during
+  March 2026 can help rank webpages that are more likely to experience a
+  meaningful impressions decline in April 2026.
+  A transparent CTR-based baseline, Logistic Regression, and Random Forest
+  were evaluated on the same client-grouped holdout with zero client overlap
+  between training and testing.
+  Logistic Regression produced the strongest measured ranking, achieving
+  Precision@20 of 0.850 and Precision@50 of 0.700, compared with 0.500 and
+  0.540 for the deterministic baseline.
+  The resulting ranking was converted into a human-reviewed content action
+  playbook intended to help FlyRank-style content teams prioritize
+  investigation rather than automate editorial decisions.
       </p>
     </div>
 
     <h2>1. Introduction / Problem Statement</h2>
 
     <p>
-      Content and SEO teams may manage far more webpages than they can
-      manually inspect at once. The practical question is therefore not only
-      whether a page may decline, but which pages should be reviewed first.
+     FlyRank's content workflow involves deciding where limited editorial and
+  SEO review time should be spent across a large portfolio of webpages.
+  When many pages could potentially be reviewed or refreshed, manually
+  inspecting everything at once is not practical.
     </p>
 
     <p>
-      This project investigates whether a small set of measured
-      search-performance signals can create a useful ranking of pages for
-      human review.
+     This creates the content-prioritization problem behind this case study:
+  <strong>
+    which webpages should a content team review first?
+  </strong>
+  The objective is not to automate content changes, but to produce a ranked
+  queue that helps a human reviewer focus attention where measured search
+  signals suggest review may be most useful.
     </p>
-
+<p>
+  This project investigates whether a small set of measured
+  search-performance signals can improve that prioritization compared with
+  a transparent hand-written rule.
+</p>
     <p>
       The research question is:
       <strong>
-        Can search-performance signals observed during March 2026 help rank
-        webpages that are more likely to experience a meaningful impressions
-        decline in April 2026?
-      </strong>
+    Can search-performance signals observed during March 2026 help rank
+    webpages that are more likely to experience a meaningful impressions
+    decline in April 2026?
+  </strong>
     </p>
 
     <p>
-      The system is designed as a ranking and decision-support tool.
-      It does not attempt to predict Google's algorithm, prove why a page
-      declined, or automatically change content.
+       The system is designed as a ranking and decision-support tool.
+  It does not attempt to predict Google's algorithm, prove why a page
+  declined, or automatically change content.
     </p>
 
     <h2>2. Data</h2>
