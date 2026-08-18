@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>
+    Ranking Webpages for Content Review Using Search Performance Signals
+  </title>
+
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.65;
+      margin: 0;
+      background: #f7f8fa;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      background: white;
+      padding: 50px 70px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin-top: 45px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    h3 {
+      margin-top: 28px;
+    }
+
+    .author {
+      font-size: 1.05rem;
+      color: #4b5563;
+      margin-bottom: 30px;
+    }
+
+    .abstract {
+      background: #f3f4f6;
+      padding: 20px 24px;
+      border-radius: 8px;
+      margin: 30px 0;
+    }
+
+    .key-result {
+      background: #eef6ff;
+      border-left: 5px solid #2563eb;
+      padding: 18px 22px;
+      margin: 25px 0;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 20px 0;
+    }
+
+    th,
+    td {
+      border: 1px solid #d1d5db;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #f3f4f6;
+    }
+
+    img {
+      width: 100%;
+      max-width: 850px;
+      display: block;
+      margin: 25px auto;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+    }
+
+    code {
+      background: #f3f4f6;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+
+    a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    ul {
+      padding-left: 24px;
+    }
+
+    .footer {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid #d1d5db;
+      color: #4b5563;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      h1 {
+        font-size: 1.9rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <h1>
+      Ranking Webpages for Content Review Using Search Performance Signals
+    </h1>
+
+    <div class="author">
+      Abdelrahman Shaheen — FlyRank ML Internship Capstone
+    </div>
+
+    <div class="abstract">
+      <h2>Abstract</h2>
+
+      <p>
+        This study asks whether search-performance signals observed during
+        March 2026 can help rank webpages that are more likely to experience
+        a meaningful impressions decline in April 2026.
+        A page-level dataset was constructed using five March-only features:
+        impressions, clicks, click-through rate, average search position,
+        and active days.
+        A transparent CTR-based baseline, Logistic Regression, and Random
+        Forest were evaluated on the same client-grouped holdout with zero
+        client overlap between training and testing.
+        Logistic Regression produced the strongest measured ranking,
+        achieving Precision@20 of 0.850 and Precision@50 of 0.700,
+        compared with 0.500 and 0.540 for the deterministic baseline.
+        The resulting scores were converted into a human-reviewed content
+        action playbook intended to prioritize investigation rather than
+        automate editorial decisions.
+      </p>
+    </div>
+
+    <h2>1. Introduction / Problem Statement</h2>
+
+    <p>
+      Content and SEO teams may manage far more webpages than they can
+      manually inspect at once. The practical question is therefore not only
+      whether a page may decline, but which pages should be reviewed first.
+    </p>
+
+    <p>
+      This project investigates whether a small set of measured
+      search-performance signals can create a useful ranking of pages for
+      human review.
+    </p>
+
+    <p>
+      The research question is:
+      <strong>
+        Can search-performance signals observed during March 2026 help rank
+        webpages that are more likely to experience a meaningful impressions
+        decline in April 2026?
+      </strong>
+    </p>
+
+    <p>
+      The system is designed as a ranking and decision-support tool.
+      It does not attempt to predict Google's algorithm, prove why a page
+      declined, or automatically change content.
+    </p>
+
+    <h2>2. Data</h2>
+
+    <p>
+      This project uses the protected FlyRank ML Internship warehouse dataset
+      and focuses on the daily content-performance data.
+    </p>
+
+    <p>
+      The feature window is <strong>March 1–31, 2026</strong>.
+      Only information available by the end of March is used as model input.
+      The outcome window is <strong>April 1–30, 2026</strong>, and April data
+      is used only to construct the future decline label and evaluate the
+      ranking.
+    </p>
+
+    <p>
+      The final analysis contained:
+    </p>
+
+    <ul>
+      <li>101,441 page-level rows</li>
+      <li>44 pseudonymized clients</li>
+      <li>51.7% observed next-month decline rate</li>
+    </ul>
+
+    <p>
+      Each row represents one pseudonymized webpage or content item for one
+      client.
+    </p>
+
+    <h3>Model features</h3>
+
+    <ul>
+      <li><code>march_impressions</code></li>
+      <li><code>march_clicks</code></li>
+      <li><code>march_ctr_pct</code></li>
+      <li><code>march_avg_position</code></li>
+      <li><code>march_active_days</code></li>
+    </ul>
+
+    <p>
+      Pages were included only when they had at least 100 March impressions
+      and were observed during April. The future label
+      <code>is_next_month_decline</code> equals 1 when April impressions are
+      more than 20% below March impressions.
+    </p>
+
+    <p>
+      April measurements, the outcome label itself, private client names,
+      real URLs, and private search queries were excluded from model inputs.
+      Client and content identifiers were used only for grouping, joining,
+      reproducibility, and validation.
+    </p>
+
+    <h2>3. Methodology</h2>
+
+    <p>
+      The task is treated primarily as a ranking problem. Each webpage
+      receives a score and pages with higher scores are reviewed first.
+    </p>
+
+    <p>
+      Three approaches were evaluated:
+    </p>
+
+    <ul>
+      <li>A deterministic CTR-based baseline</li>
+      <li>Logistic Regression</li>
+      <li>Random Forest</li>
+    </ul>
+
+    <p>
+      The dataset was split by <code>client_hash_id</code> using a grouped
+      holdout. This produced 93,085 training rows and 8,356 testing rows,
+      with zero client overlap between the two groups.
+    </p>
+
+    <p>
+      The main evaluation metric is Precision@50, with Precision@20 also
+      reported. Precision@K measures how many pages among the top K ranked
+      recommendations actually experienced the defined April decline.
+    </p>
+
+    <p>
+      A leakage audit confirmed that all model features are available by the
+      end of March. April impressions and the target label are never used as
+      predictive inputs.
+    </p>
+
+    <h2>4. Results</h2>
+
+    <div class="key-result">
+      <strong>Key result:</strong>
+      Logistic Regression produced the strongest measured ranking on the
+      grouped-client holdout, reaching Precision@20 = 0.850 and
+      Precision@50 = 0.700.
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Precision@20</th>
+          <th>Precision@50</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>Deterministic baseline</td>
+          <td>0.500</td>
+          <td>0.540</td>
+        </tr>
+
+        <tr>
+          <td>Logistic Regression</td>
+          <td><strong>0.850</strong></td>
+          <td><strong>0.700</strong></td>
+        </tr>
+
+        <tr>
+          <td>Random Forest</td>
+          <td>0.750</td>
+          <td>0.580</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      At Precision@50, Logistic Regression identified 35 declining pages
+      among its top 50 recommendations. The deterministic baseline identified
+      27 of 50, while Random Forest identified 29 of 50.
+    </p>
+
+    <p>
+      At Precision@20, Logistic Regression identified 17 declining pages
+      among the top 20, compared with 10 for the baseline and 15 for Random
+      Forest.
+    </p>
+
+    <p>
+      These results do not show that Logistic Regression is universally
+      superior. They show that, for this March-to-April evaluation,
+      five-feature design, and grouped-client holdout, Logistic Regression
+      produced the strongest measured ranking among the tested approaches.
+    </p>
+
+    <h3>Model comparison</h3>
+
+    <img
+      src="../work/figures/model_vs_baseline_precision.png"
+      alt="Model versus baseline Precision at 20 and Precision at 50"
+    />
+
+    <h2>5. Limitations & Honest Framing</h2>
+
+    <p>
+      This is a directional, decision-support analysis rather than a causal
+      study.
+    </p>
+
+    <p>
+      The model was evaluated on one specific time transition: March 2026
+      features and an April 2026 outcome. The measured performance should not
+      be assumed to transfer unchanged to all future months, clients, topics,
+      or search environments.
+    </p>
+
+    <p>
+      The decline label is also a practical proxy. A page is labeled as
+      declining when April impressions are more than 20% below March
+      impressions, but that does not prove the page has a permanent content
+      problem.
+    </p>
+
+    <p>
+      The model does not directly observe many potentially important factors,
+      including:
+    </p>
+
+    <ul>
+      <li>changes in search demand</li>
+      <li>competitor activity</li>
+      <li>SERP layout changes</li>
+      <li>seasonality</li>
+      <li>tracking changes</li>
+      <li>site migrations or technical changes</li>
+      <li>content quality or factual accuracy</li>
+      <li>content age or freshness</li>
+      <li>business importance</li>
+      <li>user intent</li>
+    </ul>
+
+    <p>
+      Therefore, a high score should not be interpreted as proof that a page
+      is stale, low quality, or necessarily in need of rewriting.
+    </p>
+
+    <p>
+      The analysis identifies measured associations and ranking performance;
+      it does not establish that changing CTR, ranking position, content
+      length, freshness, or another feature would cause future performance to
+      improve.
+    </p>
+
+    <h2>6. Ranked Recommendations</h2>
+
+    <p>
+      Logistic Regression scores are converted into a human-reviewed content
+      action playbook.
+    </p>
+
+    <p>
+      The high-priority threshold is the top 10% of model scores, approximately
+      <strong>0.593</strong>. The elevated-priority threshold begins at the
+      60th percentile, approximately <strong>0.496</strong>.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Reason code</th>
+          <th>Pages</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>REVIEW_CTR_AND_REFRESH</td>
+          <td>HIGH_SCORE_LOW_CTR_FOR_POSITION</td>
+          <td>781</td>
+        </tr>
+
+        <tr>
+          <td>REVIEW_CONTENT_AND_RANKING</td>
+          <td>HIGH_SCORE_OTHER_SIGNALS</td>
+          <td>55</td>
+        </tr>
+
+        <tr>
+          <td>MONITOR_AND_REVIEW</td>
+          <td>ELEVATED_DECLINE_SCORE</td>
+          <td>2,507</td>
+        </tr>
+
+        <tr>
+          <td>MONITOR</td>
+          <td>LOWER_DECLINE_SCORE</td>
+          <td>5,013</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Action distribution</h3>
+
+    <img
+      src="../work/figures/action_playbook_distribution.png"
+      alt="Distribution of human-review action playbook recommendations"
+    />
+
+    <p>
+      These actions are recommendations for review, not diagnoses.
+      For example, <code>REVIEW_CTR_AND_REFRESH</code> does not mean the model
+      detected stale content. The model contains no direct freshness or
+      content-age feature.
+    </p>
+
+    <p>
+      A human reviewer should inspect search intent, title and metadata,
+      page quality, freshness, tracking context, business importance,
+      seasonality, and site changes before deciding whether any action is
+      appropriate.
+    </p>
+
+    <p>
+      The intended workflow is:
+    </p>
+
+    <p>
+      <strong>
+        model ranking → reason code → human review → human decision →
+        measured follow-up
+      </strong>
+    </p>
+
+    <p>
+      The system should not automatically rewrite, publish, delete, redirect,
+      deindex, or otherwise modify pages from model scores alone.
+    </p>
+
+    <h2>7. Reproducibility</h2>
+
+    <p>
+      The analysis is documented in the public project repository and can be
+      inspected through the notebooks and generated artifacts.
+    </p>
+
+    <ul>
+      <li>
+        <a
+          href="https://github.com/Abdelrahmanshaheen1/flyrank-ml-internship"
+          target="_blank"
+        >
+          Project repository
+        </a>
+      </li>
+
+      <li>
+        <a
+          href="https://github.com/Abdelrahmanshaheen1/flyrank-ml-internship/blob/main/work/notebooks/capstone.ipynb"
+          target="_blank"
+        >
+          Capstone notebook
+        </a>
+      </li>
+    </ul>
+
+    <p>
+      The notebook contains the dataset construction, grouped-client split,
+      baseline, models, evaluation, leakage checks, action-playbook logic,
+      and paper artifacts.
+    </p>
+
+    <h2>8. Acknowledgments & Data Credit</h2>
+
+    <p>
+      Built on the
+      <a
+        href="https://flyrank.ai"
+        target="_blank"
+      >
+        FlyRank ML Internship dataset
+      </a>.
+    </p>
+
+    <p>
+      Thanks to FlyRank for providing the internship dataset and project
+      framework used for this research.
+    </p>
+
+    <div class="footer">
+      <p>
+        This research page is a public-safe summary of the internship
+        capstone. Results are presented as measured, directional,
+        decision-support findings rather than causal claims.
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>
