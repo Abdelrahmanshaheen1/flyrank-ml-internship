@@ -1,7 +1,17 @@
+<div align="center">
+
 # Which Pages Should a Content Team Review First?
-### FlyRank ML Internship capstone: ranking webpages by risk of an impressions decline
+
+**FlyRank ML Internship capstone: ranking webpages by risk of an impressions decline.**
+
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikitlearn&logoColor=white)
+![Precision@20](https://img.shields.io/badge/Precision%4020-0.85%20vs%200.50%20baseline-2ea043)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 [Read the paper](https://abdelrahmanshaheen1.github.io/flyrank-ml-internship/) · [Capstone notebook](work/notebooks/capstone.ipynb) · [Weekly assignments](work/notebooks/)
+
+</div>
 
 ## My capstone in 60 seconds
 
@@ -10,6 +20,17 @@
 **Data.** 101,441 pseudonymized pages across 44 clients (anonymized FlyRank search data, pages with at least 100 March impressions). Five March-only features: impressions, clicks, CTR, average position, active days. A page counts as declining if its April impressions are more than 20% below March (51.7% of pages).
 
 **Method.** A transparent CTR-based baseline vs. Logistic Regression vs. Random Forest, evaluated on a holdout grouped by client (no client appears in both train and test; 8,356 test pages).
+
+```mermaid
+flowchart LR
+    M["March 2026<br/>101,441 pages, 44 clients"] --> F["5 features:<br/>impressions, clicks, CTR,<br/>avg. position, active days"]
+    F --> S["Client-grouped holdout<br/>8,356 test pages"]
+    S --> B["CTR baseline"]
+    S --> LR["Logistic Regression"]
+    S --> RF["Random Forest"]
+    B & LR & RF --> P["Ranked review queue"]
+    P --> PB["Playbook: 4 labels<br/>781 / 55 / 2,507 / 5,013"]
+```
 
 | Method | Precision@20 | Precision@50 |
 |---|---:|---:|
