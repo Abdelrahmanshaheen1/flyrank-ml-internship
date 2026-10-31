@@ -1,3 +1,34 @@
+# Which Pages Should a Content Team Review First?
+### FlyRank ML Internship capstone: ranking webpages by risk of an impressions decline
+
+[Read the paper](https://abdelrahmanshaheen1.github.io/flyrank-ml-internship/) · [Capstone notebook](work/notebooks/capstone.ipynb) · [Weekly assignments](work/notebooks/)
+
+## My capstone in 60 seconds
+
+**Question.** Can search signals from March 2026 help rank webpages that are likely to lose impressions in April 2026, so a content team knows what to review first?
+
+**Data.** 101,441 pseudonymized pages across 44 clients (anonymized FlyRank search data, pages with at least 100 March impressions). Five March-only features: impressions, clicks, CTR, average position, active days. A page counts as declining if its April impressions are more than 20% below March (51.7% of pages).
+
+**Method.** A transparent CTR-based baseline vs. Logistic Regression vs. Random Forest, evaluated on a holdout grouped by client (no client appears in both train and test; 8,356 test pages).
+
+| Method | Precision@20 | Precision@50 |
+|---|---:|---:|
+| Deterministic baseline | 0.50 | 0.54 |
+| **Logistic Regression** | **0.85** | **0.70** |
+| Random Forest | 0.75 | 0.58 |
+
+17 of the model's top 20 pages really declined (baseline: 10 of 20). The simpler model beat the Random Forest.
+
+![Model vs baseline](docs/figures/model_vs_baseline_precision.png)
+
+**From score to action.** Scores feed a human-reviewed playbook with four labels. On the held-out pages: 781 "review CTR and refresh", 55 "review content and ranking", 2,507 "monitor and review", 5,013 "monitor". The model ranks; a person decides.
+
+**Honest limits.** This is directional decision support, not causal. It covers one March-to-April transition and uses a proxy label and only five features. About half of all pages decline (51.7%), so a random review queue would be right roughly half the time; the lift over that is the real result.
+
+*Built from FlyRank's starter template. The original template guide follows below.*
+
+---
+
 # FlyRank ML Internship — Starter Repo
 
 **Applied Search Intelligence: Google Search Ranking & Discoverability**
